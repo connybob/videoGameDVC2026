@@ -11,8 +11,22 @@ config_version=5
 [application]
 
 config/name="KartRacing"
+run/main_scene="uid://dck6cp0beqh5v"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+PhantomCameraManager="*uid://duq6jhf6unyis"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/phantom_camera/plugin.cfg")
 
 [filesystem]
 
