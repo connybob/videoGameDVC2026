@@ -1,14 +1,21 @@
 [gd_scene format=3 uid="uid://dbvtx3xh58gt8"]
 
 [ext_resource type="PackedScene" uid="uid://cfeadxu7gtaw2" path="res://assets/karts/models/BlueberrySodaKart.glb" id="1_8gbef"]
+[ext_resource type="Script" uid="uid://wd2rctkxab40" path="res://scenes/karts/kart.gd" id="1_47k7a"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="2_wj5qd"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="3_47k7a"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_euxm4"]
-size = Vector3(3, 1, 7)
+size = Vector3(4, 1, 6)
 
-[node name="CharacterBody3D" type="CharacterBody3D" unique_id=432816324]
+[sub_resource type="Resource" id="Resource_tcsrv"]
+script = ExtResource("3_47k7a")
+
+[node name="Kart" type="CharacterBody3D" unique_id=432816324]
+script = ExtResource("1_47k7a")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2008666198]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 shape = SubResource("BoxShape3D_euxm4")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=781529696]
@@ -16,3 +23,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.984901, 7)
 
 [node name="BlueberrySodaKart" parent="." unique_id=1165810233 instance=ExtResource("1_8gbef")]
 transform = Transform3D(-0.4, 0, 6.039832e-08, 0, 0.4, 0, -6.039832e-08, 0, -0.4, 0, 0, -2)
+
+[node name="PhantomCamera3D" type="Node3D" parent="." unique_id=1768677264 node_paths=PackedStringArray("follow_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+script = ExtResource("2_wj5qd")
+follow_mode = 6
+follow_target = NodePath("..")
+look_at_mode = 2
+tween_resource = SubResource("Resource_tcsrv")
+align_transform_with_view = Callable()
+align_position_with_view = Callable()
+align_rotation_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"

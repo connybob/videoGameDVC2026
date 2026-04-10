@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dl7mapmiqw4q"]
+
+[ext_resource type="PackedScene" uid="uid://d0og7o0u0f5uf" path="res://assets/tracks/sample track/SouthLoop.glb" id="1_8dq18"]
+[ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/kart.tscn" id="2_hwn5w"]
+
+[sub_resource type="Environment" id="Environment_d4kgb"]
+background_mode = 1
+background_color = Color(0.58827627, 0.86749035, 0.9937591, 1)
+
+[node name="TemporaryTrack" type="Node3D" unique_id=2135844419]
+
+[node name="SouthLoop" parent="." unique_id=1202627138 instance=ExtResource("1_8dq18")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="CharacterBody3D" parent="." unique_id=432816324 instance=ExtResource("2_hwn5w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.83092)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1919436972]
+transform = Transform3D(3.090862e-08, 0.7071068, 0.7071068, 3.090862e-08, -0.7071068, 0.7071068, 1, 0, -4.3711392e-08, 0, 314, -1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2145060854]
+environment = SubResource("Environment_d4kgb")
