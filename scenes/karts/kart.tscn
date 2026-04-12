@@ -31,7 +31,4 @@ follow_mode = 6
 follow_target = NodePath("..")
 look_at_mode = 2
 tween_resource = SubResource("Resource_tcsrv")
-align_transform_with_view = Callable()
-align_position_with_view = Callable()
-align_rotation_with_view = Callable()
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
