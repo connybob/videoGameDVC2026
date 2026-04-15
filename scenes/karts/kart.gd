@@ -9,7 +9,7 @@ const ACCEL = 12.0
 const DECEL = 8.0
 
 # turning speed (left and right)
-const TURN_SPEED = 2.0
+const TURN_SPEED = 0.5
 
 # pulls car down (when in air)
 const GRAVITY = -20.0
