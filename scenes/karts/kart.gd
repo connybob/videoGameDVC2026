@@ -76,9 +76,11 @@ func _physics_process(delta):
 	# -------------------------
 	var target_velocity = forward + sideways
 
-	# smooth movement (prevents snapping)
-	velocity.x = lerp(velocity.x, target_velocity.x, 8.0 * delta)
-	velocity.z = lerp(velocity.z, target_velocity.z, 8.0 * delta)
+	var retention = 1.0 - (2.2 * delta)
+	retention = clamp(retention, 0.88, 1.0)
+
+	velocity.x = velocity.x * retention + target_velocity.x * (1.0 - retention)
+	velocity.z = velocity.z * retention + target_velocity.z * (1.0 - retention)
 
 	# -------------------------
 	# WHEELS
