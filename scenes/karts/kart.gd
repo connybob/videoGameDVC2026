@@ -27,8 +27,9 @@ const STEERING_AMOUNT = 20.0
 # current movement state
 var current_speed = 0.0
 
-func _physics_process(delta):
+var horizontal_velocity = Vector3.ZERO
 
+func _physics_process(delta):
 	# gravity
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
@@ -57,10 +58,33 @@ func _physics_process(delta):
 	current_speed = clamp(current_speed, -MAX_REVERSE_SPEED, MAX_FORWARD_SPEED)
 
 	# MOVE in facing direction
-	velocity = -transform.basis.z * current_speed
+	var forward_dir = -transform.basis.z
+	var right_dir = transform.basis.x
+
+	# split velocity
+	var forward_vel = forward_dir * horizontal_velocity.dot(forward_dir)
+	var side_vel = right_dir * horizontal_velocity.dot(right_dir)
+
+	# forward acceleration
+	forward_vel += forward_dir * current_speed * delta
+
+	# drift = reduce sideways grip when turning
+	var turn = Input.get_axis("right", "left")
+	var speed_ratio = abs(current_speed) / MAX_FORWARD_SPEED
+
+	var side_friction = 6.0 - abs(turn) * speed_ratio * 4.0
+	side_friction = clamp(side_friction, 1.5, 6.0)
+
+	# apply sideways friction
+	side_vel = side_vel.move_toward(Vector3.ZERO, side_friction * delta)
+
+	# combine back
+	horizontal_velocity = forward_vel + side_vel
+
+	velocity.x = horizontal_velocity.x
+	velocity.z = horizontal_velocity.z
 
 	# turning
-	var turn = Input.get_axis("right", "left")
 	rotation.y += turn * TURN_SPEED * delta
 
 	# wheel spinning (based on movement)
@@ -71,6 +95,15 @@ func _physics_process(delta):
 
 	# steering wheel visual
 	steering_wheel.rotation.z = -turn * deg_to_rad(STEERING_AMOUNT)
+
+	# clamp final horizontal speed
+	var flat_vel = Vector3(horizontal_velocity.x, 0, horizontal_velocity.z)
+
+	if flat_vel.length() > MAX_FORWARD_SPEED:
+		flat_vel = flat_vel.normalized() * MAX_FORWARD_SPEED
+
+	horizontal_velocity.x = flat_vel.x
+	horizontal_velocity.z = flat_vel.z
 
 	# apply movement
 	move_and_slide()
