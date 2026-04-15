@@ -26,84 +26,70 @@ const STEERING_AMOUNT = 20.0
 
 # current movement state
 var current_speed = 0.0
-
 var horizontal_velocity = Vector3.ZERO
 
 func _physics_process(delta):
-	# gravity
+
+	# -------------------------
+	# GRAVITY
+	# -------------------------
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
+	else:
+		velocity.y = 0
 
-	# input (-1 reverse, 1 forward)
-	var input = Input.get_axis("reverse", "forward")
-
-	# TARGET SPEED based on input
-	var target_speed = 0.0
-	if input > 0:
-		target_speed = MAX_FORWARD_SPEED
-	elif input < 0:
-		target_speed = -MAX_REVERSE_SPEED
-
-	# ACCELERATION / DECELERATION toward target speed
-	if current_speed < target_speed:
-		current_speed += ACCEL * delta
-	elif current_speed > target_speed:
-		current_speed -= DECEL * delta
-
-	# stop tiny drifting
-	if abs(input) < 0.1:
-		current_speed = move_toward(current_speed, 0, DECEL * delta)
-
-	# clamp speeds
-	current_speed = clamp(current_speed, -MAX_REVERSE_SPEED, MAX_FORWARD_SPEED)
-
-	# MOVE in facing direction
-	var forward_dir = -transform.basis.z
-	var right_dir = transform.basis.x
-
-	# split velocity
-	var forward_vel = forward_dir * horizontal_velocity.dot(forward_dir)
-	var side_vel = right_dir * horizontal_velocity.dot(right_dir)
-
-	# forward acceleration
-	forward_vel += forward_dir * current_speed * delta
-
-	# drift = reduce sideways grip when turning
+	# -------------------------
+	# INPUT
+	# -------------------------
+	var throttle = Input.get_axis("reverse", "forward")
 	var turn = Input.get_axis("right", "left")
+
+	# -------------------------
+	# SPEED (SMOOTH ENGINE)
+	# -------------------------
+	var target_speed = throttle * MAX_FORWARD_SPEED
+	current_speed = lerp(current_speed, target_speed, 4.0 * delta)
+
+	# -------------------------
+	# TURNING (speed affects control)
+	# -------------------------
 	var speed_ratio = abs(current_speed) / MAX_FORWARD_SPEED
+	rotation.y += turn * TURN_SPEED * (0.5 + speed_ratio) * delta
 
-	var side_friction = 6.0 - abs(turn) * speed_ratio * 4.0
-	side_friction = clamp(side_friction, 1.5, 6.0)
+	# -------------------------
+	# BASE FORWARD MOTION
+	# -------------------------
+	var forward = -transform.basis.z * current_speed
 
-	# apply sideways friction
-	side_vel = side_vel.move_toward(Vector3.ZERO, side_friction * delta)
+	# -------------------------
+	# DRIFT (THIS IS THE KEY FIX)
+	# -------------------------
+	var right = transform.basis.x
 
-	# combine back
-	horizontal_velocity = forward_vel + side_vel
+	# sideways slip increases with speed + turning
+	var drift = turn * speed_ratio * abs(current_speed) * 0.35
 
-	velocity.x = horizontal_velocity.x
-	velocity.z = horizontal_velocity.z
+	var sideways = right * drift
 
-	# turning
-	rotation.y += turn * TURN_SPEED * delta
+	# -------------------------
+	# FINAL VELOCITY
+	# -------------------------
+	var target_velocity = forward + sideways
 
-	# wheel spinning (based on movement)
-	wheel_fl.rotation.x += current_speed * WHEEL_SPIN_SPEED * delta * 0.05
-	wheel_fr.rotation.x += current_speed * WHEEL_SPIN_SPEED * delta * 0.05
-	wheel_bl.rotation.x += current_speed * WHEEL_SPIN_SPEED * delta * 0.05
-	wheel_br.rotation.x += current_speed * WHEEL_SPIN_SPEED * delta * 0.05
+	# smooth movement (prevents snapping)
+	velocity.x = lerp(velocity.x, target_velocity.x, 8.0 * delta)
+	velocity.z = lerp(velocity.z, target_velocity.z, 8.0 * delta)
 
-	# steering wheel visual
+	# -------------------------
+	# WHEELS
+	# -------------------------
+	var spin = current_speed * WHEEL_SPIN_SPEED * delta * 0.05
+
+	wheel_fl.rotation.x += spin
+	wheel_fr.rotation.x += spin
+	wheel_bl.rotation.x += spin
+	wheel_br.rotation.x += spin
+
 	steering_wheel.rotation.z = -turn * deg_to_rad(STEERING_AMOUNT)
 
-	# clamp final horizontal speed
-	var flat_vel = Vector3(horizontal_velocity.x, 0, horizontal_velocity.z)
-
-	if flat_vel.length() > MAX_FORWARD_SPEED:
-		flat_vel = flat_vel.normalized() * MAX_FORWARD_SPEED
-
-	horizontal_velocity.x = flat_vel.x
-	horizontal_velocity.z = flat_vel.z
-
-	# apply movement
 	move_and_slide()
