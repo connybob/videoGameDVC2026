@@ -10,7 +10,7 @@ const MAX_FORWARD_SPEED := 55.0
 const MAX_REVERSE_SPEED := 20.0
 const ACCEL := 25.0
 const BRAKE := 35.0
-const DRAG := 8.0
+const DRAG := 20.0
 
 const TURN_SPEED := 2.2
 const GRAVITY := -20.0
@@ -91,7 +91,7 @@ func _physics_process(delta):
 	var speed_ratio = clamp(abs(current_speed) / MAX_FORWARD_SPEED, 0, 1)
 
 	if abs(current_speed) > 0.5:
-		var steer_strength = TURN_SPEED * (1.0 - 0.5 * speed_ratio)
+		var steer_strength = TURN_SPEED * (1.0 - 0.75 * speed_ratio)
 		rotation.y += turn * steer_strength * delta
 
 
