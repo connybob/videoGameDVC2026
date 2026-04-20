@@ -40,25 +40,8 @@ func _physics_process(delta):
 	# =========================================================
 	# INPUT
 	# =========================================================
-	var throttle := 0.0
-	var turn := 0.0
-
-	if is_ai and ai_target:
-		var forward = -transform.basis.z
-		forward.y = 0
-		forward = forward.normalized()
-
-		var to_target = ai_target.global_position - global_position
-		to_target.y = 0
-		to_target = to_target.normalized()
-
-		var angle = forward.signed_angle_to(to_target, Vector3.UP)
-
-		turn = clamp(angle * 2.5, -1.0, 1.0)
-		throttle = 0.7
-	else:
-		throttle = Input.get_axis("reverse", "forward")
-		turn = Input.get_axis("right", "left")
+	var throttle := Input.get_axis("reverse", "forward")
+	var turn := Input.get_axis("right", "left")
 
 
 	# =========================================================
