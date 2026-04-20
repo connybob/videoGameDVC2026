@@ -1,3 +1,4 @@
+class_name Kart
 extends CharacterBody3D
 
 @export var is_ai := false
@@ -33,16 +34,18 @@ const STEERING_AMOUNT := 20.0
 # STATE
 # -------------------------
 var current_speed := 0.0
+var throttle := 0.0
+var turn := 0.0
 
 
 func _physics_process(delta):
-
-	# =========================================================
-	# INPUT
-	# =========================================================
-	var throttle := Input.get_axis("reverse", "forward")
-	var turn := Input.get_axis("right", "left")
-
+	
+	# =========================
+	# INPUT (PLAYER ONLY)
+	# =========================
+	if not is_ai:
+		throttle = Input.get_axis("reverse", "forward")
+		turn = Input.get_axis("right", "left")
 
 	# =========================================================
 	# GRAVITY
