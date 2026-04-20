@@ -8,9 +8,14 @@ extends CharacterBody3D
 # -------------------------
 const MAX_FORWARD_SPEED := 55.0
 const MAX_REVERSE_SPEED := 20.0
-const ACCEL := 18.0
-const TURN_SPEED := 2.5
+const ACCEL := 25.0
+const BRAKE := 35.0
+const DRAG := 8.0
+
+const TURN_SPEED := 2.2
 const GRAVITY := -20.0
+
+const GRIP := 18.0   # sideways grip
 
 const WHEEL_SPIN_SPEED := 5.0
 const STEERING_AMOUNT := 20.0
@@ -33,15 +38,12 @@ var current_speed := 0.0
 func _physics_process(delta):
 
 	# =========================================================
-	# INPUT (PLAYER OR AI)
+	# INPUT
 	# =========================================================
 	var throttle := 0.0
 	var turn := 0.0
 
 	if is_ai and ai_target:
-		# -------------------------
-		# AI STEERING (STABLE)
-		# -------------------------
 		var forward = -transform.basis.z
 		forward.y = 0
 		forward = forward.normalized()
@@ -53,8 +55,6 @@ func _physics_process(delta):
 		var angle = forward.signed_angle_to(to_target, Vector3.UP)
 
 		turn = clamp(angle * 2.5, -1.0, 1.0)
-
-		# smooth AI acceleration (prevents rocket start)
 		throttle = 0.7
 	else:
 		throttle = Input.get_axis("reverse", "forward")
@@ -71,55 +71,58 @@ func _physics_process(delta):
 
 
 	# =========================================================
-	# SPEED (CLEAN ACCELERATION MODEL)
+	# SPEED CONTROL (REAL ACCELERATION)
 	# =========================================================
-	var target_speed := 0.0
+	var max_speed = MAX_FORWARD_SPEED if throttle >= 0 else MAX_REVERSE_SPEED
+	var target_speed = throttle * max_speed
 
-	if throttle >= 0.0:
-		target_speed = throttle * MAX_FORWARD_SPEED
+	# accelerate / brake
+	if abs(throttle) > 0.01:
+		var accel_rate = ACCEL if sign(throttle) == sign(current_speed) else BRAKE
+		current_speed = move_toward(current_speed, target_speed, accel_rate * delta)
 	else:
-		target_speed = throttle * MAX_REVERSE_SPEED
-
-	current_speed = move_toward(current_speed, target_speed, ACCEL * delta)
+		# natural drag when no input
+		current_speed = move_toward(current_speed, 0.0, DRAG * delta)
 
 
 	# =========================================================
-	# TURNING (SCALES WITH SPEED)
+	# TURNING (stable, no speed injection)
 	# =========================================================
-	var speed_ratio = abs(current_speed) / MAX_FORWARD_SPEED
+	var speed_ratio = clamp(abs(current_speed) / MAX_FORWARD_SPEED, 0, 1)
 
-	var horizontal_speed = Vector3(velocity.x, 0, velocity.z).length()
-	var moving = horizontal_speed > 0.5
-
-	if moving:
-		var steer_strength = TURN_SPEED * lerp(0.6, 1.4, speed_ratio)
+	if abs(current_speed) > 0.5:
+		var steer_strength = TURN_SPEED * (1.0 - 0.5 * speed_ratio)
 		rotation.y += turn * steer_strength * delta
 
 
 	# =========================================================
-	# MOVEMENT
+	# MOVEMENT (NO MORE SPEED EXPLOSION)
 	# =========================================================
 	var forward_dir = -transform.basis.z
 	var right_dir = transform.basis.x
 
-	var forward_vel = forward_dir * current_speed
+	# current velocity components
+	var forward_vel = velocity.dot(forward_dir)
+	var side_vel = velocity.dot(right_dir)
 
-	# small arcade drift (intentional, but controlled)
-	var side_vel = right_dir * (turn * speed_ratio * current_speed * 0.2)
+	# smoothly match forward velocity to desired speed
+	forward_vel = move_toward(forward_vel, current_speed, ACCEL * delta)
 
-	var target_velocity = forward_vel + side_vel
+	# kill sideways sliding
+	side_vel = move_toward(side_vel, 0.0, GRIP * delta)
 
-	# smooth movement response
-	var response = lerp(12.0, 6.0, speed_ratio) * delta
+	# rebuild velocity
+	velocity = forward_dir * forward_vel + right_dir * side_vel
 
-	velocity.x = move_toward(velocity.x, target_velocity.x, response)
-	velocity.z = move_toward(velocity.z, target_velocity.z, response)
+	# HARD SPEED CAP (final safety)
+	var max_cap = MAX_FORWARD_SPEED if current_speed >= 0 else MAX_REVERSE_SPEED
+	velocity = velocity.limit_length(max_cap)
 
 
 	# =========================================================
 	# WHEELS
 	# =========================================================
-	var spin = current_speed * WHEEL_SPIN_SPEED * delta
+	var spin = forward_vel * WHEEL_SPIN_SPEED * delta
 
 	wheel_fl.rotation.x += spin
 	wheel_fr.rotation.x += spin
