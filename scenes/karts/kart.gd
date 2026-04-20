@@ -1,34 +1,60 @@
 extends CharacterBody3D
 
-# movement speed
+@export var is_ai := false
+@export var ai_target: Node3D
+
+# -------------------------
+# SPEED
+# -------------------------
 const MAX_FORWARD_SPEED = 55.0
 const MAX_REVERSE_SPEED = 20.0
 
-# acceleration / deceleration
 const ACCEL = 12.0
 const DECEL = 8.0
 
-# turning speed (left and right)
 const TURN_SPEED = 0.5
-
-# pulls car down (when in air)
 const GRAVITY = -20.0
 
 const WHEEL_SPIN_SPEED = 5.0
 const STEERING_AMOUNT = 20.0
 
-# reference all wheel nodes
+# -------------------------
+# NODES
+# -------------------------
 @onready var wheel_fl = $BlueberrySodaKart/Wheel_FL
 @onready var wheel_fr = $BlueberrySodaKart/Wheel_FR
 @onready var wheel_bl = $BlueberrySodaKart/Wheel_BL
 @onready var wheel_br = $BlueberrySodaKart/Wheel_BR
 @onready var steering_wheel = $BlueberrySodaKart/SteeringWheel1
 
-# current movement state
+# -------------------------
+# STATE
+# -------------------------
 var current_speed = 0.0
-var horizontal_velocity = Vector3.ZERO
 
 func _physics_process(delta):
+
+	# -------------------------
+	# INPUT
+	# -------------------------
+	var throttle = 0.0
+	var turn = 0.0
+
+	if is_ai:
+		# =========================
+		# AI STEERING (FIXED)
+		# =========================
+		if ai_target:
+			var to_target = (ai_target.global_position - global_position).normalized()
+			var forward = -transform.basis.z
+
+			# steering direction (-1 left, +1 right)
+			turn = forward.cross(to_target).y
+
+		throttle = 1.0
+	else:
+		throttle = Input.get_axis("reverse", "forward")
+		turn = Input.get_axis("right", "left")
 
 	# -------------------------
 	# GRAVITY
@@ -39,45 +65,29 @@ func _physics_process(delta):
 		velocity.y = 0
 
 	# -------------------------
-	# INPUT
-	# -------------------------
-	var throttle = Input.get_axis("reverse", "forward")
-	var turn = Input.get_axis("right", "left")
-
-	# -------------------------
-	# SPEED (SMOOTH ENGINE)
+	# SPEED
 	# -------------------------
 	var target_speed = throttle * MAX_FORWARD_SPEED
 	current_speed = lerp(current_speed, target_speed, 4.0 * delta)
 
 	# -------------------------
-	# TURNING (speed affects control)
+	# TURNING
 	# -------------------------
 	var speed_ratio = abs(current_speed) / MAX_FORWARD_SPEED
 	rotation.y += turn * TURN_SPEED * (0.5 + speed_ratio) * delta
 
 	# -------------------------
-	# BASE FORWARD MOTION
+	# DRIFT PHYSICS
 	# -------------------------
 	var forward = -transform.basis.z * current_speed
-
-	# -------------------------
-	# DRIFT (THIS IS THE KEY FIX)
-	# -------------------------
 	var right = transform.basis.x
 
-	# sideways slip increases with speed + turning
-	var drift = turn * speed_ratio * abs(current_speed) * 0.35
+	var drift_strength = turn * speed_ratio * abs(current_speed) * 0.35
+	var sideways = right * drift_strength
 
-	var sideways = right * drift
-
-	# -------------------------
-	# FINAL VELOCITY
-	# -------------------------
 	var target_velocity = forward + sideways
 
-	var retention = 1.0 - (2.2 * delta)
-	retention = clamp(retention, 0.88, 1.0)
+	var retention = clamp(1.0 - (2.2 * delta), 0.88, 1.0)
 
 	velocity.x = velocity.x * retention + target_velocity.x * (1.0 - retention)
 	velocity.z = velocity.z * retention + target_velocity.z * (1.0 - retention)
