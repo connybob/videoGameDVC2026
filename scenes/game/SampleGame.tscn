@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://d0og7o0u0f5uf" path="res://assets/tracks/sample track/SouthLoop.glb" id="1_8dq18"]
 [ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/kart.tscn" id="2_hwn5w"]
+[ext_resource type="Script" path="res://scenes/game/game.gd" id="3_game1"]
+
 [ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="3_qnqgn"]
 
 [sub_resource type="Environment" id="Environment_d4kgb"]
@@ -9,6 +11,7 @@ background_mode = 1
 background_color = Color(0.58827627, 0.86749035, 0.9937591, 1)
 
 [node name="TemporaryTrack" type="Node3D" unique_id=2135844419]
+script = ExtResource("3_game1")
 
 [node name="SouthLoop" parent="." unique_id=1202627138 instance=ExtResource("1_8dq18")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
