@@ -13,7 +13,7 @@ background_color = Color(0.58827627, 0.86749035, 0.9937591, 1)
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
 [node name="CharacterBody3D" parent="." unique_id=432816324 instance=ExtResource("2_hwn5w")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.83092)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 0.877, 46.831)
 
 [node name="CharacterBody3D(2)" parent="." unique_id=138212294 node_paths=PackedStringArray("ai_target") instance=ExtResource("2_hwn5w")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.83092)

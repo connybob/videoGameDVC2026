@@ -6,17 +6,14 @@ extends CharacterBody3D
 # -------------------------
 # SPEED
 # -------------------------
-const MAX_FORWARD_SPEED = 55.0
-const MAX_REVERSE_SPEED = 20.0
+const MAX_FORWARD_SPEED := 55.0
+const MAX_REVERSE_SPEED := 20.0
+const ACCEL := 18.0
+const TURN_SPEED := 2.5
+const GRAVITY := -20.0
 
-const ACCEL = 12.0
-const DECEL = 8.0
-
-const TURN_SPEED = 0.5
-const GRAVITY = -20.0
-
-const WHEEL_SPIN_SPEED = 5.0
-const STEERING_AMOUNT = 20.0
+const WHEEL_SPIN_SPEED := 5.0
+const STEERING_AMOUNT := 20.0
 
 # -------------------------
 # NODES
@@ -30,72 +27,99 @@ const STEERING_AMOUNT = 20.0
 # -------------------------
 # STATE
 # -------------------------
-var current_speed = 0.0
+var current_speed := 0.0
+
 
 func _physics_process(delta):
 
-	# -------------------------
-	# INPUT
-	# -------------------------
-	var throttle = 0.0
-	var turn = 0.0
+	# =========================================================
+	# INPUT (PLAYER OR AI)
+	# =========================================================
+	var throttle := 0.0
+	var turn := 0.0
 
-	if is_ai:
-		# =========================
-		# AI STEERING (FIXED)
-		# =========================
-		if ai_target:
-			var to_target = (ai_target.global_position - global_position).normalized()
-			var forward = -transform.basis.z
+	if is_ai and ai_target:
+		# -------------------------
+		# AI STEERING (STABLE)
+		# -------------------------
+		var forward = -transform.basis.z
+		forward.y = 0
+		forward = forward.normalized()
 
-			# steering direction (-1 left, +1 right)
-			turn = forward.cross(to_target).y
+		var to_target = ai_target.global_position - global_position
+		to_target.y = 0
+		to_target = to_target.normalized()
 
-		throttle = 1.0
+		var angle = forward.signed_angle_to(to_target, Vector3.UP)
+
+		turn = clamp(angle * 2.5, -1.0, 1.0)
+
+		# smooth AI acceleration (prevents rocket start)
+		throttle = 0.7
 	else:
 		throttle = Input.get_axis("reverse", "forward")
 		turn = Input.get_axis("right", "left")
 
-	# -------------------------
+
+	# =========================================================
 	# GRAVITY
-	# -------------------------
+	# =========================================================
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 	else:
 		velocity.y = 0
 
-	# -------------------------
-	# SPEED
-	# -------------------------
-	var target_speed = throttle * MAX_FORWARD_SPEED
-	current_speed = lerp(current_speed, target_speed, 4.0 * delta)
 
-	# -------------------------
-	# TURNING
-	# -------------------------
+	# =========================================================
+	# SPEED (CLEAN ACCELERATION MODEL)
+	# =========================================================
+	var target_speed := 0.0
+
+	if throttle >= 0.0:
+		target_speed = throttle * MAX_FORWARD_SPEED
+	else:
+		target_speed = throttle * MAX_REVERSE_SPEED
+
+	current_speed = move_toward(current_speed, target_speed, ACCEL * delta)
+
+
+	# =========================================================
+	# TURNING (SCALES WITH SPEED)
+	# =========================================================
 	var speed_ratio = abs(current_speed) / MAX_FORWARD_SPEED
-	rotation.y += turn * TURN_SPEED * (0.5 + speed_ratio) * delta
 
-	# -------------------------
-	# DRIFT PHYSICS
-	# -------------------------
-	var forward = -transform.basis.z * current_speed
-	var right = transform.basis.x
+	var horizontal_speed = Vector3(velocity.x, 0, velocity.z).length()
+	var moving = horizontal_speed > 0.5
 
-	var drift_strength = turn * speed_ratio * abs(current_speed) * 0.35
-	var sideways = right * drift_strength
+	if moving:
+		var steer_strength = TURN_SPEED * lerp(0.6, 1.4, speed_ratio)
+		rotation.y += turn * steer_strength * delta
 
-	var target_velocity = forward + sideways
 
-	var retention = clamp(1.0 - (2.2 * delta), 0.88, 1.0)
+	# =========================================================
+	# MOVEMENT
+	# =========================================================
+	var forward_dir = -transform.basis.z
+	var right_dir = transform.basis.x
 
-	velocity.x = velocity.x * retention + target_velocity.x * (1.0 - retention)
-	velocity.z = velocity.z * retention + target_velocity.z * (1.0 - retention)
+	var forward_vel = forward_dir * current_speed
 
-	# -------------------------
+	# small arcade drift (intentional, but controlled)
+	var side_vel = right_dir * (turn * speed_ratio * current_speed * 0.2)
+
+	var target_velocity = forward_vel + side_vel
+
+	# smooth movement response
+	var response = lerp(12.0, 6.0, speed_ratio) * delta
+
+	velocity.x = move_toward(velocity.x, target_velocity.x, response)
+	velocity.z = move_toward(velocity.z, target_velocity.z, response)
+
+
+	# =========================================================
 	# WHEELS
-	# -------------------------
-	var spin = current_speed * WHEEL_SPIN_SPEED * delta * 0.05
+	# =========================================================
+	var spin = current_speed * WHEEL_SPIN_SPEED * delta
 
 	wheel_fl.rotation.x += spin
 	wheel_fr.rotation.x += spin
@@ -103,5 +127,6 @@ func _physics_process(delta):
 	wheel_br.rotation.x += spin
 
 	steering_wheel.rotation.z = -turn * deg_to_rad(STEERING_AMOUNT)
+
 
 	move_and_slide()
