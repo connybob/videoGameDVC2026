@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://d0og7o0u0f5uf" path="res://assets/tracks/sample track/SouthLoop.glb" id="1_8dq18"]
 [ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/kart.tscn" id="2_hwn5w"]
-[ext_resource type="Script" path="res://scenes/game/game.gd" id="3_game1"]
-
 [ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="3_qnqgn"]
+
+[ext_resource type="Script" path="res://scenes/game/game.gd" id="3_game1"]
 
 [sub_resource type="Environment" id="Environment_d4kgb"]
 background_mode = 1
