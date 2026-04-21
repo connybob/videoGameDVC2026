@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://d0og7o0u0f5uf" path="res://assets/tracks/sample track/SouthLoop.glb" id="1_8dq18"]
 [ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/kart.tscn" id="2_hwn5w"]
+[ext_resource type="PackedScene" uid="uid://dxf5k3tjbt3fr" path="res://assets/startingline/start_finish_line.tscn" id="3_qnqgn"]
 
 [sub_resource type="Environment" id="Environment_d4kgb"]
 background_mode = 1
@@ -17,6 +18,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.8309
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1919436972]
 transform = Transform3D(3.090862e-08, 0.7071068, 0.7071068, 3.090862e-08, -0.7071068, 0.7071068, 1, 0, -4.3711392e-08, 0, 314, -1)
+
+[node name="Startingline" parent="." unique_id=325181818 instance=ExtResource("3_qnqgn")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 61.772, 0.5, 19.604)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2145060854]
 environment = SubResource("Environment_d4kgb")
