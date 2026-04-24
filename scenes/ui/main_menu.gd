@@ -200,6 +200,10 @@ func _on_card_unhover(style: StyleBoxFlat, map: Dictionary) -> void:
 func _on_map_selected(idx: int) -> void:
 	GameState.selected_map = idx
 
+	# Debugging
+	print(ProjectSettings.globalize_path("res://"))
+	print(ResourceLoader.exists("res://scenes/game/SampleGame.tscn"))
+
 	if _bg_tween: _bg_tween.kill()
 
 	var overlay := ColorRect.new()

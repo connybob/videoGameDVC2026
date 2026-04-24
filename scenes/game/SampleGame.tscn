@@ -14,8 +14,16 @@ script = ExtResource("3_game1")
 [node name="SouthLoop" parent="." unique_id=1202627138 instance=ExtResource("1_8dq18")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
-[node name="CharacterBody3D" parent="." unique_id=432816324 instance=ExtResource("2_hwn5w")]
+[node name="PlayerKart" parent="." unique_id=432816324 instance=ExtResource("2_hwn5w")]
+process_mode = 3
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 0.877, 46.831)
+
+[node name="AIKart" parent="." unique_id=138212294 node_paths=PackedStringArray("vehicle", "target") instance=ExtResource("2_hwn5w")]
+process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.83092)
+script = ExtResource("3_qnqgn")
+vehicle = NodePath(".")
+target = NodePath("../AI_Target")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1919436972]
 transform = Transform3D(3.090862e-08, 0.7071068, 0.7071068, 3.090862e-08, -0.7071068, 0.7071068, 1, 0, -4.3711392e-08, 0, 314, -1)
@@ -25,3 +33,5 @@ transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 61.772, 0.5, 19.604)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2145060854]
 environment = SubResource("Environment_d4kgb")
+
+[node name="AI_Target" type="Node3D" parent="." unique_id=1307294343]
