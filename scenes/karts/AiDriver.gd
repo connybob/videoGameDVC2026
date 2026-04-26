@@ -5,7 +5,19 @@ extends Node
 
 var smoothed_turn := 0.0
 
+func _init():
+	print("AI SCRIPT LOADED")
+
+func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	set_process(true)
+	print("AI DRIVER READY")
+
 func _process(delta):
+	print("vehicle class:", vehicle.get_class())
+	print("AI running")
+	print("AI throttle:", vehicle.throttle, " turn:", vehicle.turn)
+	print("-------------------")
 
 	if vehicle == null or target == null:
 		return
