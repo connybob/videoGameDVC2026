@@ -18,6 +18,9 @@ func _process(delta):
 	# move forward along path based on speed
 	distance += abs(vehicle.current_speed) * delta
 
+	var curve_length = path.curve.get_baked_length()
+	distance = fmod(distance, curve_length)
+
 	# get point ahead on track
 	var target_pos = path.curve.sample_baked(distance + 8.0)
 
