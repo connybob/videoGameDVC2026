@@ -47,9 +47,9 @@ func _physics_process(delta):
 	print("is_ai:", is_ai, " throttle:", throttle)
 
 	# ── INPUT (PLAYER ONLY) ──
-	if not is_ai:
-		throttle = Input.get_axis("reverse", "forward")
-		turn = Input.get_axis("right", "left")
+	#if not is_ai:
+	#	throttle = Input.get_axis("reverse", "forward")
+	#	turn = Input.get_axis("right", "left")
 
 	# ── GRAVITY ──
 	if not is_on_floor():
