@@ -2,9 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://d0og7o0u0f5uf" path="res://assets/tracks/sample track/SouthLoop.glb" id="1_8dq18"]
 [ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/kart.tscn" id="2_hwn5w"]
+[ext_resource type="Script" uid="uid://yt6ficyjjs7q" path="res://scenes/game/game.gd" id="3_game1"]
 [ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="3_qnqgn"]
-
-[ext_resource type="Script" path="res://scenes/game/game.gd" id="3_game1"]
 
 [sub_resource type="Environment" id="Environment_d4kgb"]
 background_mode = 1
@@ -24,7 +23,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 0.877, 46.831)
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.83092)
 script = ExtResource("3_qnqgn")
-vehicle = NodePath(".")
+vehicle = NodePath("../PlayerKart")
 target = NodePath("../AI_Target")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1919436972]
@@ -33,4 +32,7 @@ transform = Transform3D(3.090862e-08, 0.7071068, 0.7071068, 3.090862e-08, -0.707
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2145060854]
 environment = SubResource("Environment_d4kgb")
 
-[node name="AI_Target" type="Node3D" parent="." unique_id=1307294343]
+[node name="AI_Target" type="Node3D" parent="." unique_id=1307294343 node_paths=PackedStringArray("vehicle", "target")]
+script = ExtResource("3_qnqgn")
+vehicle = NodePath("../PlayerKart")
+target = NodePath(".")
