@@ -11,11 +11,12 @@ background_mode = 1
 background_color = Color(0.58827627, 0.86749035, 0.9937591, 1)
 
 [sub_resource type="Curve3D" id="Curve3D_vup5s"]
+bake_interval = 0.01
 _data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 62.5, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, -100),
-"tilts": PackedFloat32Array(0, 0)
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 62.5, 0, 0, 0, 0, 0, 0, 0, 0, 75, 0, -100, 0, 0, 0, 0, 0, 0, 195, 2, -340, 0, 0, 0, 0, 0, 0, 75, 2, -495, 0, 0, 0, 0, 0, 0, -25, 0, -480, 0, 0, 0, 0, 0, 0, -80, 0, -340, 0, 0, 0, 0, 0, 0, -148, 1, -150, 0, 0, 0, 0, 0, 0, -90, 1, 0, 0, 0, 0, 0, 0, 0, -90, 0, 110),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0)
 }
-point_count = 2
+point_count = 9
 
 [node name="TemporaryTrack" type="Node3D" unique_id=2135844419]
 script = ExtResource("3_game1")
