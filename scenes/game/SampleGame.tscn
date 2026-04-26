@@ -10,6 +10,13 @@
 background_mode = 1
 background_color = Color(0.58827627, 0.86749035, 0.9937591, 1)
 
+[sub_resource type="Curve3D" id="Curve3D_vup5s"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 62.5, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, -100),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
 [node name="TemporaryTrack" type="Node3D" unique_id=2135844419]
 script = ExtResource("3_game1")
 
@@ -29,14 +36,17 @@ process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.19377, 0.87686324, 46.83092)
 is_ai = true
 
-[node name="AI_Target" type="Node3D" parent="AIKart" unique_id=1307294343 node_paths=PackedStringArray("vehicle", "target")]
+[node name="AI_Target" type="Node3D" parent="AIKart" unique_id=1307294343 node_paths=PackedStringArray("vehicle", "path")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -61.19377, -0.87686324, -46.83092)
 script = ExtResource("3_qnqgn")
 vehicle = NodePath("..")
-target = NodePath(".")
+path = NodePath("../../Track")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1919436972]
 transform = Transform3D(3.090862e-08, 0.7071068, 0.7071068, 3.090862e-08, -0.7071068, 0.7071068, 1, 0, -4.3711392e-08, 0, 314, -1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2145060854]
 environment = SubResource("Environment_d4kgb")
+
+[node name="Track" type="Path3D" parent="." unique_id=1655007416]
+curve = SubResource("Curve3D_vup5s")
