@@ -45,9 +45,9 @@ var boost_speed := 0.0
 func _physics_process(delta):
 
 	# ── INPUT (PLAYER ONLY) ──
-	if not is_ai:
-		throttle = Input.get_axis("reverse", "forward")
-		turn = Input.get_axis("right", "left")
+	#if not is_ai:
+	#	throttle = Input.get_axis("reverse", "forward")
+	#	turn = Input.get_axis("right", "left")
 
 	# ── GRAVITY ──
 	if not is_on_floor():
@@ -113,3 +113,15 @@ func _physics_process(delta):
 	wheel_br.rotation.x += spin
 
 	move_and_slide()
+<<<<<<< HEAD
+=======
+
+
+func _apply_boost():
+	if drift_charge >= BOOST_SUPER[0]:
+		boost_speed = BOOST_SUPER[1]
+		boost_timer = BOOST_SUPER[2]
+	elif drift_charge >= BOOST_MINI[0]:
+		boost_speed = BOOST_MINI[1]
+		boost_timer = BOOST_MINI[2]
+>>>>>>> c929abfada6cc00a3fa420d7c84928822c92ebac
