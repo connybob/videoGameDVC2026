@@ -9,13 +9,17 @@ const MAX_REVERSE_SPEED := 14.0
 const ACCEL := 20.0
 const BRAKE := 30.0
 const DRAG := 12.0
-const TURN_SPEED := 0.65
+const TURN_SPEED := 0.95
 const GRAVITY := -20.0
 
 # ───────── DRIFT ─────────
 const DRIFT_TURN_MULTIPLIER := 1.3
 const DRIFT_SLIP := 0.25
-const DRIFT_MIN_SPEED := 10.0
+const DRIFT_MIN_SPEED := 15.0
+# new
+const DRIFT_HOP_HEIGHT := 2.5
+var hop_triggered := false
+var waiting_for_land := false
 
 # ───────── BOOST ─────────
 const BOOST_MINI := [0.8, 50.0, 0.9]
@@ -44,10 +48,10 @@ var boost_speed := 0.0
 
 func _physics_process(delta):
 
-	# ── INPUT (PLAYER ONLY) ──
-	#if not is_ai:
-	#	throttle = Input.get_axis("reverse", "forward")
-	#	turn = Input.get_axis("right", "left")
+	 #── INPUT (PLAYER ONLY) ──
+	if not is_ai:
+		throttle = Input.get_axis("reverse", "forward")
+		turn = Input.get_axis("right", "left")
 
 	# ── GRAVITY ──
 	if not is_on_floor():
@@ -67,29 +71,81 @@ func _physics_process(delta):
 	var speed_ratio = abs(current_speed) / MAX_FORWARD_SPEED
 
 	# ── DRIFT INPUT ──
+	#old
+	#var drift_pressed := Input.is_action_pressed("drift")
+	#var can_drift: bool = drift_pressed and is_on_floor() and abs(current_speed) > DRIFT_MIN_SPEED
+#
+	#if can_drift:
+		#if not is_drifting:
+			#drift_dir = 1 if turn >= 0 else -1
+			#is_drifting = true
+			#drift_charge = 0.0
+#
+		#drift_charge += delta
+#
+		#var drift_turn = drift_dir * TURN_SPEED * DRIFT_TURN_MULTIPLIER * speed_ratio
+		#rotation.y += drift_turn * delta
+#
+		#kart_model.rotation.z = lerp(kart_model.rotation.z, -drift_dir * 0.1, 10 * delta)
+#
+	#else:
+		#if is_drifting:
+			#_apply_boost()
+#
+		#is_drifting = false
+		#kart_model.rotation.z = lerp(kart_model.rotation.z, 0.0, 10 * delta)
+#
+		#rotation.y += turn * TURN_SPEED * (0.5 + speed_ratio) * delta
+	#new
 	var drift_pressed := Input.is_action_pressed("drift")
-	var can_drift: bool = drift_pressed and is_on_floor() and abs(current_speed) > DRIFT_MIN_SPEED
+	var drift_just_pressed := Input.is_action_just_pressed("drift")
+
+	# Hop on initial drift press
+	if drift_just_pressed and is_on_floor() and abs(current_speed) > DRIFT_MIN_SPEED:
+		velocity.y = DRIFT_HOP_HEIGHT
+		hop_triggered = true
+		waiting_for_land = true
+		drift_dir = 0
+	if waiting_for_land and is_on_floor() and hop_triggered:
+		waiting_for_land = false
+	# NOW read turn input — player has had time to input a direction
+	if abs(turn) > 0.1:
+		drift_dir = 1 if turn > 0 else -1
+		is_drifting = true
+		drift_charge = 0.0
+	else:
+		# No direction input — cancel drift entirely
+		hop_triggered = false
+
+	var can_drift: bool = drift_pressed and abs(current_speed) > DRIFT_MIN_SPEED
 
 	if can_drift:
-		if not is_drifting:
-			drift_dir = 1 if turn >= 0 else -1
+		if not is_drifting and hop_triggered:
+			# Lock drift direction from current turn; if no turn input, use last turn
+			if abs(turn) > 0.1:
+				drift_dir = 1 if turn > 0 else -1
+			elif drift_dir == 0:
+				drift_dir = 1  # fallback, shouldn't normally hit this
 			is_drifting = true
 			drift_charge = 0.0
 
-		drift_charge += delta
+		if is_drifting:
+			drift_charge += delta
 
-		var drift_turn = drift_dir * TURN_SPEED * DRIFT_TURN_MULTIPLIER * speed_ratio
-		rotation.y += drift_turn * delta
+			# Player can steer within the drift
+			var inner_turn = turn * 0.4  # wiggle room while drifting
+			var drift_turn = (drift_dir * TURN_SPEED * DRIFT_TURN_MULTIPLIER + inner_turn) * speed_ratio
+			rotation.y += drift_turn * delta
 
-		kart_model.rotation.z = lerp(kart_model.rotation.z, -drift_dir * 0.1, 10 * delta)
-
+			# Tilt kart body into the drift
+			kart_model.rotation.z = lerp(kart_model.rotation.z, -drift_dir * 0.15, 10 * delta)
 	else:
 		if is_drifting:
 			_apply_boost()
-
 		is_drifting = false
+		hop_triggered = false
+		drift_dir = 0
 		kart_model.rotation.z = lerp(kart_model.rotation.z, 0.0, 10 * delta)
-
 		rotation.y += turn * TURN_SPEED * (0.5 + speed_ratio) * delta
 
 	# ── MOVEMENT ──
@@ -113,7 +169,6 @@ func _physics_process(delta):
 	wheel_br.rotation.x += spin
 
 	move_and_slide()
-
 
 func _apply_boost():
 	if drift_charge >= BOOST_SUPER[0]:

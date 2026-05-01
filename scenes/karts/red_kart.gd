@@ -1,0 +1,2 @@
+class_name RedKart
+extends CharacterBody3D
