@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://dl7mapmiqw4q"]
 
 [ext_resource type="PackedScene" uid="uid://d0og7o0u0f5uf" path="res://assets/tracks/sample track/SouthLoop.glb" id="1_8dq18"]
-[ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/kart.tscn" id="2_hwn5w"]
-[ext_resource type="Script" uid="uid://yt6ficyjjs7q" path="res://scenes/game/game.gd" id="3_game1"]
+[ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/redKart.tscn" id="2_hwn5w"]
 [ext_resource type="Script" uid="uid://yt6ficyjjs7q" path="res://scenes/game/game.gd" id="3_game1"]
 [ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="3_qnqgn"]
+[ext_resource type="Script" uid="uid://dwcodmyceo1c3" path="res://scenes/karts/PlayerDriver.gd" id="4_vup5s"]
 
 [sub_resource type="Environment" id="Environment_d4kgb"]
 background_mode = 1

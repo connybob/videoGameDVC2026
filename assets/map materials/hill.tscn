@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bsvtukov8d4na"]
+
+[ext_resource type="PackedScene" uid="uid://bmotpfw2pvogs" path="res://assets/map materials/block-grass-curve.glb" id="1_iddko"]
+
+[node name="Node3D" type="Node3D" unique_id=711257298]
+
+[node name="block-grass-curve2" parent="." unique_id=896362877 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, -1, 0, -3)
+
+[node name="block-grass-curve8" parent="." unique_id=479243026 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, -1, 0, -16)
+
+[node name="block-grass-curve6" parent="." unique_id=564412952 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 26, 0, -1)
+
+[node name="block-grass-curve7" parent="." unique_id=1296448917 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 26, 0, 11.4)
+
+[node name="block-grass-curve3" parent="." unique_id=878903878 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, -1, 0, 11)
+
+[node name="block-grass-curve11" parent="." unique_id=1599172333 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, -1, 0, 22.9)
+
+[node name="block-grass-curve4" parent="." unique_id=21503529 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 26, 10, 11)
+
+[node name="block-grass-curve10" parent="." unique_id=1690521813 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 26, 10, 23)
+
+[node name="block-grass-curve5" parent="." unique_id=803298131 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 26, 10, -2)
+
+[node name="block-grass-curve9" parent="." unique_id=1483082851 instance=ExtResource("1_iddko")]
+transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 26, 10, -17)

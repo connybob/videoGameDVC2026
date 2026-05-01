@@ -1,19 +1,23 @@
 [gd_scene format=4 uid="uid://dxf5k3tjbt3fr"]
 
 [ext_resource type="Texture2D" uid="uid://bopfu3bgqn2sf" path="res://assets/textures/checkerboardTexture.png" id="1_vooih"]
-[ext_resource type="PackedScene" uid="uid://qvdvf8x6o0mb" path="res://assets/startingline/truss.glb" id="2_1k3d5"]
 [ext_resource type="Texture2D" uid="uid://owndofmtbtuh" path="res://assets/startingline/truss_0.jpg" id="3_fmwow"]
 [ext_resource type="Texture2D" uid="uid://txyh5fn67o5b" path="res://assets/startingline/truss_1.png" id="4_m0mmi"]
 [ext_resource type="Texture2D" uid="uid://dl7ofyfhkq167" path="res://assets/startingline/truss_2.png" id="5_rnxmu"]
 [ext_resource type="Material" uid="uid://swpdagu0tqb8" path="res://assets/startingline/new_standard_material_3d.tres" id="6_m0mmi"]
+[ext_resource type="Texture2D" uid="uid://beky6b684crv0" path="res://assets/textures/GrandPrix.png" id="6_rnxmu"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1v4xt"]
 size = Vector2(5.2, 1.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fmwow"]
-albedo_color = Color(0.66245234, 0.66245234, 0.6624523, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tymnu"]
 albedo_texture = ExtResource("1_vooih")
-albedo_texture_force_srgb = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_m0mmi"]
+size = Vector3(5.3, 0.75, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rnxmu"]
+diffuse_mode = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sf668"]
 resource_name = "1001"
@@ -64,29 +68,15 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_d4srr")
 
-[sub_resource type="BoxMesh" id="BoxMesh_m0mmi"]
-size = Vector3(5.3, 0.75, 0.25)
+[sub_resource type="BoxShape3D" id="BoxShape3D_fmwow"]
+size = Vector3(0.5, 2, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rnxmu"]
-diffuse_mode = 2
+[sub_resource type="BoxShape3D" id="BoxShape3D_m0mmi"]
+size = Vector3(0.5, 2, 0.2)
 
 [node name="checkerboard" type="MeshInstance3D" unique_id=325181818]
 mesh = SubResource("PlaneMesh_1v4xt")
-surface_material_override/0 = SubResource("StandardMaterial3D_fmwow")
-
-[node name="truss1" parent="." unique_id=2091242156 instance=ExtResource("2_1k3d5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 1, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="truss1" unique_id=298108336]
-mesh = SubResource("ArrayMesh_tymnu")
-surface_material_override/0 = ExtResource("6_m0mmi")
-
-[node name="truss2" parent="." unique_id=854562059 instance=ExtResource("2_1k3d5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8000002, 1, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="truss2" unique_id=878795055]
-mesh = SubResource("ArrayMesh_tymnu")
-surface_material_override/0 = ExtResource("6_m0mmi")
+surface_material_override/0 = SubResource("StandardMaterial3D_tymnu")
 
 [node name="board" type="MeshInstance3D" parent="." unique_id=929606720]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5999999, 0)
@@ -95,3 +85,33 @@ surface_material_override/0 = SubResource("StandardMaterial3D_rnxmu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=212168997]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.29999995, 4, 0)
+
+[node name="truss1" type="MeshInstance3D" parent="." unique_id=298108336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 1, 0)
+mesh = SubResource("ArrayMesh_tymnu")
+surface_material_override/0 = ExtResource("6_m0mmi")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="truss1" unique_id=1169545152]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="truss1/StaticBody3D" unique_id=1137383872]
+shape = SubResource("BoxShape3D_fmwow")
+
+[node name="truss2" type="MeshInstance3D" parent="." unique_id=878795055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8000002, 1, 0)
+mesh = SubResource("ArrayMesh_tymnu")
+surface_material_override/0 = ExtResource("6_m0mmi")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="truss2" unique_id=1908473140]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="truss2/StaticBody3D" unique_id=1584479980]
+shape = SubResource("BoxShape3D_m0mmi")
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=804181270]
+transform = Transform3D(-0.2, 0, -3.019916e-08, 0, 0.2, 0, 3.019916e-08, 0, -0.2, 0, 1.6, -0.19999999)
+double_sided = false
+texture = ExtResource("6_rnxmu")
+
+[node name="Sprite3D2" type="Sprite3D" parent="." unique_id=1870376548]
+transform = Transform3D(0.2, 0, 4.7683717e-08, 0, 0.2, 0, -4.7683717e-08, 0, 0.2, 0, 1.6, 0.19999993)
+double_sided = false
+texture = ExtResource("6_rnxmu")
