@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dks1v01wlhb4n" path="res://scenes/tracks/GrandPrixRoad.tscn" id="1_14mt6"]
 [ext_resource type="PackedScene" uid="uid://dxf5k3tjbt3fr" path="res://assets/startingline/start_finish_line.tscn" id="2_vsrdp"]
+[ext_resource type="PackedScene" uid="uid://dbvtx3xh58gt8" path="res://scenes/karts/redKart.tscn" id="2_vxta6"]
 [ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="3_n5ry7"]
 [ext_resource type="PackedScene" uid="uid://dtqmtej60eiwg" path="res://assets/map materials/clouds_cartoon.glb" id="4_vsrdp"]
 [ext_resource type="PackedScene" uid="uid://btx1stse786ck" path="res://assets/map materials/rowBlock.tscn" id="5_7r4hb"]
@@ -38,11 +39,13 @@ size = Vector3(1392, 1, 1138)
 [node name="player" parent="." unique_id=320775412 instance=ExtResource("8_07tqh")]
 transform = Transform3D(6.7055225e-08, 0, -1, 0, 1, 0, 1, 0, 6.7055225e-08, -10, 0.5, -130)
 
-[node name="ai" parent="." unique_id=432816324 instance=ExtResource("8_07tqh")]
-transform = Transform3D(-4.3711392e-08, 0, -1, 0, 1.0000001, 0, 1.0000001, 0, -4.371139e-08, -38.99115, 1, -124.51034)
-is_ai = true
+[node name="ai1" parent="." unique_id=432816324 instance=ExtResource("2_vxta6")]
+process_mode = 3
+transform = Transform3D(6.3329935e-08, 0, -1, 0, 1, 0, 1, 0, 6.3329935e-08, 6, 0.5, -122.1)
+up_direction = Vector3(1, 0, 0)
 
-[node name="Ai_Target" type="Node3D" parent="ai" unique_id=1763880142 node_paths=PackedStringArray("vehicle", "path")]
+[node name="AI_Target" type="Node3D" parent="ai1" unique_id=2082759483 node_paths=PackedStringArray("vehicle", "path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -61.19377, -0.87686324, -46.83092)
 script = ExtResource("3_n5ry7")
 vehicle = NodePath("..")
 path = NodePath("../../Path3D")

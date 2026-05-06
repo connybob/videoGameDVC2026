@@ -31,7 +31,8 @@ const BOOST_SUPER := [1.8, 60.0, 1.4]
 @onready var wheel_bl = $BlueberrySodaKart/Wheel_BL
 @onready var wheel_br = $BlueberrySodaKart/Wheel_BR
 @onready var steering_wheel = $BlueberrySodaKart/SteeringWheel1
-@onready var kart_model = $BlueberrySodaKart
+#@onready var kart_model = $BlueberrySodaKart
+@onready var kart_model := get_node_or_null("BlueberrySodaKart")
 
 # ───────── STATE ─────────
 var current_speed := 0.0
