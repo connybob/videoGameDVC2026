@@ -22,15 +22,23 @@ func _process(delta):
 	distance = fposmod(distance, curve_length)
 
 	# -------------------------------------------------
-	# 2. GET ROAD DIRECTION (TANGENT, NOT POINT CHASING)
+	# 2. MULTI LOOKAHEAD (smarter steering target)
 	# -------------------------------------------------
-	var p1 = curve.sample_baked(distance)
-	var p2 = curve.sample_baked(distance + 5.0)
+	var look1 = fposmod(distance + 4.0, curve_length)
+	var look2 = fposmod(distance + 8.0, curve_length)
+	var look3 = fposmod(distance + 14.0, curve_length)
 
-	var p1_world = path.to_global(p1)
-	var p2_world = path.to_global(p2)
+	var p1 = path.to_global(curve.sample_baked(look1))
+	var p2 = path.to_global(curve.sample_baked(look2))
+	var p3 = path.to_global(curve.sample_baked(look3))
 
-	var path_dir = (p2_world - p1_world).normalized()
+	# weighted target (near matters more than far)
+	var target_pos = (p1 * 0.5 + p2 * 0.3 + p3 * 0.2)
+
+	# direction toward combined target
+	var to_target = target_pos - vehicle.global_position
+	to_target.y = 0
+	to_target = to_target.normalized()
 
 	# -------------------------------------------------
 	# 3. VEHICLE FORWARD DIRECTION
@@ -42,7 +50,7 @@ func _process(delta):
 	# -------------------------------------------------
 	# 4. STEERING ANGLE (COMPARE DIRECTIONS)
 	# -------------------------------------------------
-	var angle = forward.signed_angle_to(path_dir, Vector3.UP)
+	var angle = forward.signed_angle_to(to_target, Vector3.UP)
 
 	# -------------------------------------------------
 	# 5. STEERING SMOOTHING (REMOVE JITTER)
@@ -68,4 +76,4 @@ func _process(delta):
 	# -------------------------------------------------
 	if Engine.get_physics_frames() % 10 == 0:
 		print("POS:", vehicle.global_position)
-		print("DIR:", path_dir)
+		print("DIR:", to_target)
