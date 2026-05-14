@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://4x2maettmysw"]
+
+[ext_resource type="ArrayMesh" uid="uid://e8x7l2ajwnii" path="res://assets/map materials/cactus2.res" id="1_r21fq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xpm8r"]
+size = Vector3(1, 1, 2)
+
+[node name="Node3D" type="StaticBody3D" unique_id=1514070146]
+
+[node name="Cactus2" type="MeshInstance3D" parent="." unique_id=1862165603]
+transform = Transform3D(1, 0, 0, 0, 1.1924881e-08, 1, 0, -1, 1.1924881e-08, -1, 0, 1)
+mesh = ExtResource("1_r21fq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=285239161]
+transform = Transform3D(1, 0, 0, 0, 1.1924881e-08, 1, 0, -1, 1.1924881e-08, -1, 1.1, 1)
+shape = SubResource("BoxShape3D_xpm8r")

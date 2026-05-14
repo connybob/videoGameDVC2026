@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bg5mwq1jbhp1f"]
+
+[ext_resource type="PackedScene" uid="uid://bbjryp4p4qt54" path="res://assets/map materials/tumbleweed_jumping.glb" id="1_vt4fu"]
+
+[node name="StaticBody3D" type="StaticBody3D" unique_id=713789357]
+
+[node name="Sketchfab_Scene" parent="." unique_id=936172021 instance=ExtResource("1_vt4fu")]
+transform = Transform3D(80, 0, 0, 0, 80, 0, 0, 0, 80, 11, -39, -13)
+
+[node name="tumbleweed" parent="Sketchfab_Scene/Sketchfab_model/b5be7d61a8a14b22a358dcdf6ed95555_fbx/Object_2/RootNode" parent_id_path=PackedInt32Array(936172021, 1988666881) index="0" unique_id=646194071]
+transform = Transform3D(1, 0, 0, 0, 0.14181218, -0.98989356, 0, 0.98989356, 0.14181218, -4.680336, 27.612185, -66.01267)
+
+[editable path="Sketchfab_Scene"]
