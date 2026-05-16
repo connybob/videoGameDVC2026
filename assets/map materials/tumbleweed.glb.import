@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bmotpfw2pvogs"
-path="res://.godot/imported/block-grass-curve.glb-4587f310626f2fcb6994f40f2678e077.scn"
+uid="uid://8861ifq7il4b"
+path="res://.godot/imported/tumbleweed.glb-362b16a519046d4fcca4c6e100e5e385.scn"
 
 [deps]
 
-source_file="res://assets/map materials/block-grass-curve.glb"
-dest_files=["res://.godot/imported/block-grass-curve.glb-4587f310626f2fcb6994f40f2678e077.scn"]
+source_file="res://assets/map materials/tumbleweed.glb"
+dest_files=["res://.godot/imported/tumbleweed.glb-362b16a519046d4fcca4c6e100e5e385.scn"]
 
 [params]
 
@@ -37,6 +37,18 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"meshes": {
+"Sketchfab_Scene_Plane_007_Material_001_0": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://assets/map materials/tumb.res",
+"save_to_file/path": "uid://bx01o6bjxtlds"
+}
+}
+}
 gltf/naming_version=2
 gltf/embedded_image_handling=1
