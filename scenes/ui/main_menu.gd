@@ -217,7 +217,7 @@ func _on_map_selected(idx: int) -> void:
 		if idx == 0:      # Grand Prix Map
 			get_tree().change_scene_to_file("res://scenes/game/GrandPrixMap.tscn")
 		elif idx == 1:    # Sunset Map
-			get_tree().change_scene_to_file("res://scenes/game/DesertDusk.tscn")
+			get_tree().change_scene_to_file("res://scenes/game/DesertDuskMap.tscn")
 		elif idx == 2:    # Night Map
 			get_tree().change_scene_to_file("res://scenes/game/SampleGame.tscn")
 	)
