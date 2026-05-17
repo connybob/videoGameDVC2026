@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"from PIL import Image, ImageDraw, ImageFont; print\\('PIL available'\\)\")",
+      "Bash(python3 -c \"import PIL; print\\(PIL.__version__\\)\")",
+      "Bash(python3 -m pip install Pillow -q)",
+      "Bash(python3 -c \"from PIL import Image; print\\('ready'\\)\")",
+      "Bash(python3 *)",
+      "Bash(grep -v \"^$\")"
+    ]
+  }
+}

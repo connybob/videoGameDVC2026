@@ -211,10 +211,14 @@ func _on_map_selected(idx: int) -> void:
 	overlay.color = Color(0, 0, 0, 0)
 	add_child(overlay)
 
+	var scene_path := "res://scenes/game/GrandPrixMap.tscn"
+	if idx == 2:
+		scene_path = "res://scenes/game/MidnightCircuit.tscn"
+
 	_bg_tween = create_tween()
 	_bg_tween.tween_property(overlay, "color", Color(0, 0, 0, 1), 0.40)
 	_bg_tween.tween_callback(func():
-		get_tree().change_scene_to_file("res://scenes/game/SampleGame.tscn"))
+		get_tree().change_scene_to_file(scene_path))
 
 
 # ── HELPERS ─────────────────────────────────────────────────────────────────

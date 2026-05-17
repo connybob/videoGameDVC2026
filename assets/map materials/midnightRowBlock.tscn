@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bgbb57umipd8i"]
+
+[ext_resource type="PackedScene" uid="uid://bxk2m5nq8r4vw" path="res://assets/map materials/darkNavyBlock.tscn" id="1_mrb01"]
+[ext_resource type="PackedScene" uid="uid://cyl3n6osas5wx" path="res://assets/map materials/midnightBlueBlock.tscn" id="2_mrb02"]
+[ext_resource type="PackedScene" uid="uid://d0m4o7ps0t6xy" path="res://assets/map materials/nearBlackBlock.tscn" id="3_mrb03"]
+[ext_resource type="PackedScene" uid="uid://faa46tlhoc78" path="res://assets/map materials/steelBlueBlock.tscn" id="4_mrb04"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mrb01"]
+size = Vector3(23, 5, 1)
+
+[node name="Node3D" type="Node3D" unique_id=697636099]
+
+[node name="darkNavy" parent="." unique_id=262000091 instance=ExtResource("1_mrb01")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 2.2833304, 0, 0.4865713)
+
+[node name="midnightBlue" parent="." unique_id=733128091 instance=ExtResource("2_mrb02")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, -2.1, 0, 0.3)
+
+[node name="nearBlack" parent="." unique_id=1446840091 instance=ExtResource("3_mrb03")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 9.8, 0, 0.39999995)
+
+[node name="steelBlue" parent="." unique_id=497601091 instance=ExtResource("4_mrb04")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 6.2000003, 0, 0.2)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1795213091]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=892912091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, 0)
+shape = SubResource("BoxShape3D_mrb01")
