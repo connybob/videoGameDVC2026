@@ -1,7 +1,7 @@
 extends Node3D
 
 @onready var world_env: WorldEnvironment = $WorldEnvironment
-@onready var sun: DirectionalLight3D     = $DirectionalLight3D
+@onready var sun: DirectionalLight3D     = $light1
 
 var CLUSTERS: Array[Vector2] = [
 	Vector2(-120,  20), Vector2(-100, -70), Vector2(-105,  95),
@@ -12,7 +12,39 @@ var CLUSTERS: Array[Vector2] = [
 const CLUSTER_RADIUS: float = 32.0
 const PER_CLUSTER: int      = 4
 
+# Lamp clusters for Midnight Circuit — kept off the road surface
+# (road at start: x=0–450, z=-111 to -140)
+var MIDNIGHT_LAMP_CLUSTERS: Array[Vector2] = [
+	# Outside the outer barrier (z < -155)
+	Vector2(  55, -165), Vector2( 130, -165), Vector2( 230, -165),
+	Vector2( 330, -165), Vector2( 420, -155), Vector2( 500, -100),
+	# Inside the inner barrier (circuit interior, z > -95 at start straight)
+	Vector2(  55,  -85), Vector2( 130,  -85), Vector2( 230,  -85),
+	Vector2(-150,   45), Vector2(-210,   -5), Vector2(-100,  110),
+]
+
 var rng := RandomNumberGenerator.new()
+
+# ─────────────────────────── RACE TIMER STATE ────────────────────────────────
+
+const _RACE_LIMIT := 120.0  # 2 minutes for 2 laps
+
+var _race_time    := _RACE_LIMIT  # counts DOWN from 120
+var _racing       := false        # true after countdown completes
+var _finished     := false
+var _finish_armed := false        # true once kart has left the start zone
+var _lap_count    := 0            # laps completed (max 2)
+
+var _cd_value   := 3
+var _cd_elapsed := 0.0
+const _CD_STEP  := 1.0  # seconds per countdown beat
+
+var _hud_canvas:    CanvasLayer
+var _timer_label:   Label
+var _lap_label:     Label
+var _cd_label:      Label
+var _finish_label:  Label
+var _kart:          CharacterBody3D
 
 
 func _ready() -> void:
@@ -21,14 +53,206 @@ func _ready() -> void:
 
 	_setup_sky(idx)
 	_setup_lighting(GameState.MAPS[idx])
+	_setup_scene_nodes(idx)
 
 	match idx:
 		0: _spawn_grand_prix()
 		1: _spawn_desert()
 		2: _spawn_midnight()
 
+	_setup_hud()
+	_setup_finish_area()
+	_start_countdown()
 
-# ─────────────────────────── SKY ────────────────────────────────────────────
+
+# ─────────────────────────── SCENE NODE SETUP ───────────────────────────────
+
+func _setup_scene_nodes(idx: int) -> void:
+	# Hide daytime clouds on non-Grand-Prix maps
+	if idx != 0:
+		for i in range(1, 15):
+			var cloud := get_node_or_null("cloud%d" % i)
+			if cloud:
+				cloud.visible = false
+
+	if idx == 2:
+		# Dark asphalt floor instead of beach
+		var floor_mesh := get_node_or_null("floor/MeshInstance3D") as MeshInstance3D
+		if floor_mesh:
+			var mat := StandardMaterial3D.new()
+			mat.albedo_color = Color(0.07, 0.07, 0.09)
+			floor_mesh.material_override = mat
+
+		# Swap banner to Midnight Circuit
+		var tex: Texture2D = load("res://assets/textures/MidnightCircuit.png")
+		for sprite_path in ["startingline/Sprite3D", "startingline/Sprite3D2"]:
+			var sprite := get_node_or_null(sprite_path) as Sprite3D
+			if sprite and tex:
+				sprite.texture = tex
+
+
+# ─────────────────────────── HUD ─────────────────────────────────────────────
+
+func _setup_hud() -> void:
+	_hud_canvas = CanvasLayer.new()
+	add_child(_hud_canvas)
+
+	# Race timer — top-centre (shows countdown)
+	_timer_label = Label.new()
+	_timer_label.text = "2:00.000"
+	_timer_label.add_theme_font_size_override("font_size", 36)
+	_timer_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	_timer_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	_timer_label.add_theme_constant_override("shadow_offset_x", 2)
+	_timer_label.add_theme_constant_override("shadow_offset_y", 2)
+	_timer_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_timer_label.position = Vector2(-80, 20)
+	_timer_label.visible  = false
+	_hud_canvas.add_child(_timer_label)
+
+	# Lap counter — top-right
+	_lap_label = Label.new()
+	_lap_label.text = "Lap 1 / 2"
+	_lap_label.add_theme_font_size_override("font_size", 32)
+	_lap_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	_lap_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	_lap_label.add_theme_constant_override("shadow_offset_x", 2)
+	_lap_label.add_theme_constant_override("shadow_offset_y", 2)
+	_lap_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_lap_label.position = Vector2(-160, 20)
+	_lap_label.visible  = false
+	_hud_canvas.add_child(_lap_label)
+
+	# Countdown — centre screen
+	_cd_label = Label.new()
+	_cd_label.text = "3"
+	_cd_label.add_theme_font_size_override("font_size", 128)
+	_cd_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.1))
+	_cd_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+	_cd_label.add_theme_constant_override("shadow_offset_x", 3)
+	_cd_label.add_theme_constant_override("shadow_offset_y", 3)
+	_cd_label.set_anchors_preset(Control.PRESET_CENTER)
+	_cd_label.position = Vector2(-48, -64)
+	_hud_canvas.add_child(_cd_label)
+
+	# Finish banner — centre screen, hidden until lap done
+	_finish_label = Label.new()
+	_finish_label.text = ""
+	_finish_label.add_theme_font_size_override("font_size", 52)
+	_finish_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.4))
+	_finish_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+	_finish_label.add_theme_constant_override("shadow_offset_x", 3)
+	_finish_label.add_theme_constant_override("shadow_offset_y", 3)
+	_finish_label.set_anchors_preset(Control.PRESET_CENTER)
+	_finish_label.position = Vector2(-200, 40)
+	_finish_label.visible  = false
+	_hud_canvas.add_child(_finish_label)
+
+
+# ─────────────────────────── COUNTDOWN ───────────────────────────────────────
+
+func _start_countdown() -> void:
+	_kart = get_node_or_null("player")
+	if _kart:
+		_kart.set_physics_process(false)
+	_cd_value   = 3
+	_cd_elapsed = 0.0
+	_cd_label.text    = "3"
+	_cd_label.visible = true
+
+
+func _process(delta: float) -> void:
+	if _finished:
+		return
+
+	# ── COUNTDOWN phase ──
+	if not _racing:
+		_cd_elapsed += delta
+		if _cd_elapsed >= _CD_STEP:
+			_cd_elapsed -= _CD_STEP
+			_cd_value   -= 1
+			if _cd_value > 0:
+				_cd_label.text = str(_cd_value)
+			else:
+				_cd_label.text    = "GO!"
+				_racing           = true
+				_timer_label.visible = true
+				_lap_label.visible   = true
+				if _kart:
+					_kart.set_physics_process(true)
+				# Hide GO! after half a second
+				var t := get_tree().create_timer(0.6)
+				t.timeout.connect(func(): _cd_label.visible = false)
+				# Arm finish detection after enough time to clear the start zone
+				var arm_timer := get_tree().create_timer(8.0)
+				arm_timer.timeout.connect(func(): _finish_armed = true)
+		return
+
+	# ── RACING phase ──
+	_race_time  -= delta
+	if _race_time <= 0.0:
+		_race_time = 0.0
+		_timer_label.text = "0:00.000"
+		_timer_label.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+		_finished = true
+		_finish_label.text    = "Time's Up!"
+		_finish_label.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+		_finish_label.visible = true
+		return
+	# Turn timer red in the last 10 seconds
+	if _race_time <= 10.0:
+		_timer_label.add_theme_color_override("font_color", Color(1, 0.3, 0.3))
+	_timer_label.text = _format_time(_race_time)
+
+
+func _setup_finish_area() -> void:
+	# Thin box across the road at the start/finish line, perpendicular to travel
+	var area  := Area3D.new()
+	var col   := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	# Road is ~30 units wide (z: -111 to -140); span 36 to catch both lanes
+	shape.size = Vector3(4.0, 5.0, 36.0)
+	col.shape  = shape
+	area.add_child(col)
+	# Position at the starting line — slightly behind player start so they
+	# cross it on the way back, not on the first frame
+	area.position = Vector3(8.0, 1.0, -125.0)
+	add_child(area)
+	area.body_entered.connect(_on_finish_line_crossed)
+
+
+func _on_finish_line_crossed(body: Node3D) -> void:
+	if _finished or not _finish_armed or not _racing:
+		return
+	if body != _kart:
+		return
+
+	_lap_count += 1
+
+	if _lap_count == 1:
+		# First lap done — show lap 2 and re-arm
+		_lap_label.text = "Lap 2 / 2"
+		_finish_armed   = false
+		var arm_timer := get_tree().create_timer(4.0)
+		arm_timer.timeout.connect(func(): _finish_armed = true)
+	elif _lap_count >= 2:
+		# Both laps done — player wins
+		_finished = true
+		_timer_label.visible = false
+		var time_left := _race_time
+		_finish_label.text = "Finished!  " + _format_time(time_left) + " left"
+		_finish_label.visible = true
+
+
+func _format_time(t: float) -> String:
+	t = maxf(t, 0.0)
+	var minutes := int(t) / 60
+	var seconds := int(t) % 60
+	var ms      := int(fmod(t, 1.0) * 1000.0)
+	return "%d:%02d.%03d" % [minutes, seconds, ms]
+
+
+# ─────────────────────────── SKY ─────────────────────────────────────────────
 
 func _setup_sky(idx: int) -> void:
 	var m := ProceduralSkyMaterial.new()
@@ -66,7 +290,7 @@ func _setup_lighting(map: Dictionary) -> void:
 	world_env.environment.ambient_light_energy = map["ambient_energy"]
 
 
-# ─────────────────────────── MAP 0: GRAND PRIX ──────────────────────────────
+# ─────────────────────────── MAP 0: GRAND PRIX ───────────────────────────────
 
 func _spawn_grand_prix() -> void:
 	_spawn_clouds()
@@ -175,7 +399,7 @@ func _add_crowd_row(center: Vector3, length: float, depth: float) -> void:
 				crng.randf_range(0.1, 0.9),
 				crng.randf_range(0.1, 0.9)
 			)
-			person_mesh.material = person_mat  # shared, but colour cycles per batch
+			person_mesh.material = person_mat
 
 			var t := Transform3D(Basis(), Vector3(px, py, pz))
 			mm.set_instance_transform(i, t)
@@ -204,7 +428,7 @@ func _make_tree(p: Vector2) -> void:
 	_mesh(cm_mesh, Vector3(p.x, h + cr * 0.55, p.y))
 
 
-# ─────────────────────────── MAP 1: DESERT ──────────────────────────────────
+# ─────────────────────────── MAP 1: DESERT ───────────────────────────────────
 
 func _spawn_desert() -> void:
 	for c in CLUSTERS:
@@ -234,13 +458,73 @@ func _make_cactus(p: Vector2) -> void:
 		_cyl(Vector3(p.x + ra_w, ra_y + ra_h * 0.5, p.y), 0.18, 0.20, ra_h, mat)
 
 
-# ─────────────────────────── MAP 2: MIDNIGHT ────────────────────────────────
+# ─────────────────────────── MAP 2: MIDNIGHT ─────────────────────────────────
 
 func _spawn_midnight() -> void:
 	_spawn_stars()
-	for c in CLUSTERS:
+	_spawn_city_buildings()
+	# Use road-safe lamp clusters instead of shared CLUSTERS
+	var lamp_rng := RandomNumberGenerator.new()
+	lamp_rng.seed = 99991
+	for c in MIDNIGHT_LAMP_CLUSTERS:
 		for _i in range(2):
-			_make_lamp_post(_scatter(c))
+			var angle := lamp_rng.randf() * TAU
+			var dist  := lamp_rng.randf() * 22.0
+			var p := c + Vector2(cos(angle), sin(angle)) * dist
+			_make_lamp_post(p)
+
+
+func _spawn_city_buildings() -> void:
+	var brng := RandomNumberGenerator.new()
+	brng.seed = 77777
+
+	var building_mat := StandardMaterial3D.new()
+	building_mat.albedo_color = Color(0.06, 0.06, 0.12)
+
+	var window_mat := StandardMaterial3D.new()
+	window_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	window_mat.emission_enabled = true
+	window_mat.emission = Color(0.92, 0.82, 0.48)
+	window_mat.emission_energy_multiplier = 2.5
+
+	var window_mat2 := StandardMaterial3D.new()
+	window_mat2.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	window_mat2.emission_enabled = true
+	window_mat2.emission = Color(0.50, 0.75, 1.00)
+	window_mat2.emission_energy_multiplier = 2.5
+
+	# Building positions — placed outside track barriers or in circuit interior.
+	# Road at far-left section (x≈-158) runs z=-69 to z=-139; old position
+	# (-158,-105) was in the road. Moved to (-158,-160) outside the outer wall.
+	var building_positions: Array[Vector2] = [
+		Vector2(-162,  55), Vector2(-168, -25), Vector2(-158, -160),
+		Vector2( 238,  55), Vector2( 232, -25), Vector2( 228, -105),
+		Vector2(  65,-168), Vector2(   0,-162), Vector2( 135, -165),
+		Vector2(  65, 230), Vector2(  -5, 222), Vector2( 135,  226),
+	]
+
+	for base in building_positions:
+		var w := brng.randf_range(14.0, 24.0)
+		var h := brng.randf_range(22.0, 52.0)
+		var d := brng.randf_range(12.0, 20.0)
+
+		var box := BoxMesh.new()
+		box.size = Vector3(w, h, d)
+		box.material = building_mat
+		_mesh(box, Vector3(base.x, h * 0.5, base.y))
+
+		# Lit windows on the track-facing side
+		var win_cols := maxi(int(w / 4.0), 1)
+		var win_rows := maxi(int(h / 6.0), 1)
+		for row in range(win_rows):
+			for col in range(win_cols):
+				if brng.randf() < 0.55:
+					var wx := base.x - w * 0.5 + (col + 0.5) * (w / win_cols)
+					var wy := 3.0 + (row + 0.5) * (h / win_rows)
+					var wbox := BoxMesh.new()
+					wbox.size = Vector3(1.1, 1.4, 0.3)
+					wbox.material = window_mat if brng.randf() > 0.3 else window_mat2
+					_mesh(wbox, Vector3(wx, wy, base.y - d * 0.5 - 0.12))
 
 
 func _spawn_stars() -> void:
@@ -296,7 +580,7 @@ func _make_lamp_post(p: Vector2) -> void:
 	add_child(light)
 
 
-# ─────────────────────────── SHARED ─────────────────────────────────────────
+# ─────────────────────────── SHARED ──────────────────────────────────────────
 
 func _make_rock(p: Vector2, color: Color) -> void:
 	var sphere := SphereMesh.new()

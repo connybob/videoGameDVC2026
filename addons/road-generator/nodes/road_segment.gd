@@ -696,7 +696,7 @@ func _rebuild():
 
 	# Reposition this node to be physically located between both RoadPoints.
 	global_transform.origin = (
-		start_point.global_transform.origin + start_point.global_transform.origin) / 2.0
+		start_point.global_transform.origin + end_point.global_transform.origin) / 2.0
 
 	_update_curve()
 
@@ -947,6 +947,7 @@ func _build_geo():
 	st.generate_normals()
 	road_mesh.mesh = st.commit()
 	road_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	road_mesh.extra_cull_margin = 1000.0
 
 	# Generating underside
 	# Reset SurfaceTool state
