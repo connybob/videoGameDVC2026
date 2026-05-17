@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://doyta627vs1kw"]
 
 [ext_resource type="PackedScene" uid="uid://dagfj6jngd050" path="res://scenes/tracks/DesertDusk.tscn" id="1_o2anh"]
+[ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="2_ese0h"]
 [ext_resource type="PackedScene" uid="uid://dxf5k3tjbt3fr" path="res://assets/startingline/desertdusk.tscn" id="2_gyrk0"]
 [ext_resource type="PackedScene" uid="uid://cj5ej61dhs8eq" path="res://scenes/karts/blueKart.tscn" id="3_ajkkm"]
 [ext_resource type="Texture2D" uid="uid://bfvpueeqp5jmd" path="res://assets/textures/beach-texture-with-golden-sandy-waves-vector.jpg" id="4_mwooo"]
@@ -8,6 +9,13 @@
 [ext_resource type="PackedScene" uid="uid://bo6en8t35mouv" path="res://assets/map materials/cactus.tscn" id="6_2nayv"]
 [ext_resource type="PackedScene" uid="uid://4x2maettmysw" path="res://assets/map materials/cactus2.tscn" id="7_hyae8"]
 [ext_resource type="PackedScene" uid="uid://ddpd6w685vm4l" path="res://assets/map materials/tumb.tscn" id="8_hyae8"]
+
+[sub_resource type="Curve3D" id="Curve3D_hyae8"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 208.07527, 1.6303127, 866.17505, 0, 0, 0, 0, 0, 0, -122.63235, 1.5, 1013.0197, 0, 0, 0, 0, 0, 0, -253.60905, 0.7637296, 1018.3031, 0, 0, 0, 0, 0, 0, -298.9143, 0, 981.5158, 0, 0, 0, 0, 0, 0, -328.67563, 0, 917.2359, 0, 0, 0, 0, 0, 0, -308.15457, 0, 641.6312, 0, 0, 0, 0, 0, 0, -313.34518, 0, 589.7702, 0, 0, 0, 0, 0, 0, -327.57245, 0, 557.54785, 0, 0, 0, 0, 0, 0, -353.56122, 0, 535.4577),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 9
 
 [sub_resource type="Environment" id="Environment_2nayv"]
 background_mode = 1
@@ -27,6 +35,19 @@ uv1_scale = Vector3(6, 6, 6)
 size = Vector3(1500, 1, 1200)
 
 [node name="DesertDuskMap" type="Node3D" unique_id=1924152381]
+
+[node name="ai" parent="." unique_id=432816324 instance=ExtResource("3_ajkkm")]
+transform = Transform3D(-1.5298987e-08, 0, -0.35, 0, 0.35000002, 0, 0.35000002, 0, -1.5298985e-08, 73.6727, 6.0808096, 300.81073)
+is_ai = true
+
+[node name="Ai_Target" type="Node3D" parent="ai" unique_id=299270361 node_paths=PackedStringArray("vehicle", "path")]
+script = ExtResource("2_ese0h")
+vehicle = NodePath("..")
+path = NodePath("../../Path3D")
+
+[node name="Path3D" type="Path3D" parent="." unique_id=837907829]
+transform = Transform3D(0.35, 0, 0, 0, 0.35, 0, 0, 0, 0.35, -0.871, 0.6, 1.932)
+curve = SubResource("Curve3D_hyae8")
 
 [node name="RoadManager" parent="." unique_id=1045701319 instance=ExtResource("1_o2anh")]
 transform = Transform3D(0.35, 0, 0, 0, 0.35, 0, 0, 0, 0.35, -0.871, 0.6, 1.932)
@@ -49,7 +70,7 @@ environment = SubResource("Environment_2nayv")
 [node name="checkerboard" parent="." unique_id=325181818 instance=ExtResource("2_gyrk0")]
 transform = Transform3D(1.8999999, 0, -3.2908967, 0, 3.8, 0, 3.2908967, 0, 1.8999999, 64, 0.7, 312)
 
-[node name="Kart" parent="." unique_id=432816324 instance=ExtResource("3_ajkkm")]
+[node name="Kart" parent="." unique_id=1527599129 instance=ExtResource("3_ajkkm")]
 transform = Transform3D(-0.50000006, 0, 0.8660254, 0, 1, 0, -0.8660254, 0, -0.50000006, 86, 0.4, 305)
 
 [node name="cloud" parent="." unique_id=600830666 instance=ExtResource("5_rn0ks")]

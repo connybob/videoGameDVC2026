@@ -1,2 +1,2 @@
 class_name RedKart
-extends CharacterBody3D
+extends Kart
