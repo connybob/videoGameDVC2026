@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://dxf5k3tjbt3fr"]
+[gd_scene format=4 uid="uid://chcc6xvnjqeij"]
 
 [ext_resource type="Texture2D" uid="uid://bopfu3bgqn2sf" path="res://assets/textures/checkerboardTexture.png" id="1_vooih"]
 [ext_resource type="Texture2D" uid="uid://owndofmtbtuh" path="res://assets/startingline/truss_0.jpg" id="3_fmwow"]
@@ -6,7 +6,7 @@
 [ext_resource type="Material" uid="uid://swpdagu0tqb8" path="res://assets/startingline/new_standard_material_3d.tres" id="5_i5xue"]
 [ext_resource type="Texture2D" uid="uid://dl7ofyfhkq167" path="res://assets/startingline/truss_2.png" id="5_rnxmu"]
 [ext_resource type="Material" uid="uid://dfjsocuobidh1" path="res://assets/textures/brown.tres" id="5_yvs1n"]
-[ext_resource type="Texture2D" uid="uid://dnlvaofog3mew" path="res://assets/textures/DesertDusk.png" id="6_yvs1n"]
+[ext_resource type="Texture2D" uid="uid://urwby1noykes" path="res://assets/textures/MidnightCircuit.png" id="6_yvs1n"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1v4xt"]
 size = Vector2(5.2, 1.5)

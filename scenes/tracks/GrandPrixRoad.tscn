@@ -14,7 +14,7 @@ metadata/_custom_type_script = "uid://cbxil66p30uis"
 [node name="RoadContainer" type="Node3D" parent="." unique_id=1398657657]
 script = ExtResource("2_vsrdp")
 material_resource = ExtResource("3_ox1pc")
-use_lowpoly_preview = true
+use_lowpoly_preview = false
 physics_material = SubResource("PhysicsMaterial_vssiw")
 metadata/_custom_type_script = "uid://c3ofvsropmrs2"
 
