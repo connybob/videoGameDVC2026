@@ -2,10 +2,19 @@
 
 [ext_resource type="PackedScene" uid="uid://dks1v01wlhb4n" path="res://scenes/tracks/GrandPrixRoad.tscn" id="1_14mt6"]
 [ext_resource type="PackedScene" uid="uid://d26xgp8bqru84" path="res://assets/startingline/grandprixLine.tscn" id="2_vsrdp"]
+[ext_resource type="Script" uid="uid://f5lhnhxtlfca" path="res://scenes/karts/AiDriver.gd" id="3_n5ry7"]
 [ext_resource type="PackedScene" uid="uid://dtqmtej60eiwg" path="res://assets/map materials/clouds_cartoon.glb" id="4_vsrdp"]
 [ext_resource type="PackedScene" uid="uid://btx1stse786ck" path="res://assets/map materials/rowBlock.tscn" id="5_7r4hb"]
 [ext_resource type="PackedScene" uid="uid://5ty0akyi1wid" path="res://assets/map materials/tree-tall.glb" id="6_k3xu6"]
 [ext_resource type="PackedScene" uid="uid://cj5ej61dhs8eq" path="res://scenes/karts/blueKart.tscn" id="8_07tqh"]
+
+[sub_resource type="Curve3D" id="Curve3D_t46el"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -10.523125, 6.656044, -123.3873, 0, 0, 0, 0, 0, 0, 405.1612, 0, -124, 0, 0, 0, 0, 0, 0, 421.6184, 1.2100258, -118.937294, 0, 0, 0, 0, 0, 0, 435.09384, 1.013, -107.32606, 0, 0, 0, 0, 0, 0, 466.336, 1.0129852, -67.5, 0, 0, 0, 0, 0, 0, 527.11066, 1.0110312, -59.697483, 0, 0, 0, 0, 0, 0, 539.691, 0, -45.131287, 0, 0, 0, 0, 0, 0, 544.494, 0, -22.869, 0, 0, 0, 0, 0, 0, 515.371, 0, 60, 0, 0, 0, 0, 0, 0, 401.653, 0, 96.108, 0, 0, 0, 0, 0, 0, 283.2451, -0.36228943, 83.29846, 0, 0, 0, 0, 0, 0, 273.63715, 0, 65, 0, 0, 0, 0, 0, 0, 296.52, 0, 22.086, 0, 0, 0, 0, 0, 0, 340.516, 0, -17.261, 0, 0, 0, 0, 0, 0, 390.38742, 1.0896826, 20.274267, 0, 0, 0, 0, 0, 0, 404.62518, 0.5393877, 16.336355, 0, 0, 0, 0, 0, 0, 413.00604, 1.1772633, 5.4821386, 0, 0, 0, 0, 0, 0, 433.4, 0, -44.28, 0, 0, 0, 0, 0, 0, 414.664, 0, -66.38, 0, 0, 0, 0, 0, 0, 299.403, 0, -86.081, 0, 0, 0, 0, 0, 0, 185.49359, 3.5674706, -85.12877, 0, 0, 0, 0, 0, 0, 162.33727, 2.4559822, -59.279, 0, 0, 0, 0, 0, 0, 184.03746, 2.9892235, 8.787, 0, 0, 0, 0, 0, 0, 119.45922, 0, 62.294, 0, 0, 0, 0, 0, 0, 59.994, 1.2424736, 88.692, 0, 0, 0, 0, 0, 0, 37.597107, 1.1845913, 89.89761, 0, 0, 0, 0, 0, 0, 14.658123, 1.7109222, 69.96118, 0, 0, 0, 0, 0, 0, -41.030746, 2.2864227, -34.294, 0, 0, 0, 0, 0, 0, -107.191, 0, -54.259, 0, 0, 0, 0, 0, 0, -173.308, 2.9049988, -55.772, 0, 0, 0, 0, 0, 0, -183.124, 0, -14.123, 0, 0, 0, 0, 0, 0, -169.499, 0, 18.169079, 0, 0, 0, 0, 0, 0, -87.35174, 4.107071, 45.953266, 0, 0, 0, 0, 0, 0, -65.67766, 0, 58.451393, 0, 0, 0, 0, 0, 0, -62.468678, 1.4722786, 94.71164, 0, 0, 0, 0, 0, 0, -103.17279, 1.2650299, 139.41406, 0, 0, 0, 0, 0, 0, -229.61499, 0.8640747, 168.032, 0, 0, 0, 0, 0, 0, -268.815, 2.7749443, 158.63132, 0, 0, 0, 0, 0, 0, -288.7603, 0, 131.86734, 0, 0, 0, 0, 0, 0, -316.03717, 2.1382027, 34.625404, 0, 0, 0, 0, 0, 0, -269.77252, 0.8878403, -24.452477, 0, 0, 0, 0, 0, 0, -274.65408, 5.3134537, -84.80681, 0, 0, 0, 0, 0, 0, -235.4442, 0, -115.90001),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 43
 
 [sub_resource type="Environment" id="Environment_14mt6"]
 background_mode = 1
@@ -24,12 +33,24 @@ size = Vector3(1392, 1, 1138)
 
 [node name="GrandPrixMap" type="Node3D" unique_id=1003048214]
 
+[node name="Track" type="Path3D" parent="." unique_id=529270060]
+curve = SubResource("Curve3D_t46el")
+
+[node name="player" parent="." unique_id=320775412 instance=ExtResource("8_07tqh")]
+transform = Transform3D(6.7055225e-08, 0, -1, 0, 1, 0, 1, 0, 6.7055225e-08, -10, 0.5, -130)
+
+[node name="ai" parent="." unique_id=432816324 instance=ExtResource("8_07tqh")]
+transform = Transform3D(-4.3711392e-08, 0, -1, 0, 1.0000001, 0, 1.0000001, 0, -4.371139e-08, -4.0510063, 1, -122.552704)
+is_ai = true
+
+[node name="Ai_Target" type="Node3D" parent="ai" unique_id=1763880142 node_paths=PackedStringArray("vehicle", "path")]
+script = ExtResource("3_n5ry7")
+vehicle = NodePath("..")
+path = NodePath("../../Track")
+
 [node name="RoadManager" parent="." unique_id=1045701319 instance=ExtResource("1_14mt6")]
 transform = Transform3D(0.35, 0, 0, 0, 0.35, 0, 0, 0, 0.35, 109.114, 0.6, -126.711)
 metadata/_edit_lock_ = true
-
-[node name="player" parent="." unique_id=320775412 instance=ExtResource("8_07tqh")]
-transform = Transform3D(6.7055225e-08, 0, -1, 0, 1, 0, 1, 0, 6.7055225e-08, 13, 1.1, -123)
 
 [node name="light2" type="DirectionalLight3D" parent="." unique_id=986233963]
 transform = Transform3D(0.66591465, -0.7252446, -0.17486572, -0.3097347, -0.4820103, 0.8195917, -0.6786915, -0.49161607, -0.54561114, -20.957016, 77.46153, -342.74768)
@@ -247,19 +268,19 @@ transform = Transform3D(-0.9961947, 0, 0.08715585, 0, 1, 0, -0.08715585, 0, -0.9
 transform = Transform3D(-0.8660253, 0, 0.50000006, 0, 1, 0, -0.50000006, 0, -0.8660253, 272.09998, 0, 97)
 
 [node name="rowBlock180" parent="." unique_id=1169546724 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(-0.25881895, 0, 0.9659258, 0, 1, 0, -0.9659258, 0, -0.25881895, 257.09998, 0, 84)
+transform = Transform3D(-0.19782834, 0, 0.98023665, 0, 1, 0, -0.98023665, 0, -0.19782834, 257.7638, 0, 84)
 
 [node name="rowBlock181" parent="." unique_id=1492730281 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.34202024, 0, 0.93969256, 0, 1, 0, -0.93969256, 0, 0.34202024, 255.09998, 0, 64)
+transform = Transform3D(0.34202024, 0, 0.93969256, 0, 1, 0, -0.93969256, 0, 0.34202024, 256.98425, 0, 64)
 
 [node name="rowBlock182" parent="." unique_id=857370506 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.50000006, 0, 0.86602527, 0, 1, 0, -0.86602527, 0, 0.50000006, 262.09998, 0, 45)
+transform = Transform3D(0.50000006, 0, 0.86602527, 0, 1, 0, -0.86602527, 0, 0.50000006, 264.3692, 0, 46.34268)
 
 [node name="rowBlock183" parent="." unique_id=432835649 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.5735765, 0, 0.81915194, 0, 1, 0, -0.81915194, 0, 0.5735765, 273.09998, 0, 27)
+transform = Transform3D(0.5735765, 0, 0.81915194, 0, 1, 0, -0.81915194, 0, 0.5735765, 274.7647, 0, 28.72863)
 
 [node name="rowBlock184" parent="." unique_id=245449605 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.6427877, 0, 0.7660444, 0, 1, 0, -0.7660444, 0, 0.6427877, 285.09998, 0, 12)
+transform = Transform3D(0.5564987, 0, 0.8308485, 0, 1, 0, -0.8308485, 0, 0.5564987, 285.68494, 0, 12.489771)
 
 [node name="rowBlock185" parent="." unique_id=1321830 instance=ExtResource("5_7r4hb")]
 transform = Transform3D(0.7071068, 0, 0.7071067, 0, 1, 0, -0.7071067, 0, 0.7071068, 297.09998, 0, -3)
@@ -274,13 +295,13 @@ transform = Transform3D(0.9659258, 0, 0.25881895, 0, 1, 0, -0.25881895, 0, 0.965
 transform = Transform3D(0.96592575, 0, -0.2588191, 0, 1, 0, 0.2588191, 0, 0.96592575, 350.89688, 0, -29.29137)
 
 [node name="rowBlock190" parent="." unique_id=1260124211 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.70710665, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710665, 368.89688, 0, -20.29137)
+transform = Transform3D(0.73436975, 0, -0.67874944, 0, 1, 0, 0.67874944, 0, 0.73436975, 368.89688, 0, -21.307108)
 
 [node name="rowBlock191" parent="." unique_id=63985019 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.8191519, 0, -0.57357645, 0, 1, 0, 0.57357645, 0, 0.8191519, 382.89688, 0, -6.2913704)
+transform = Transform3D(0.6815897, 0, -0.7317346, 0, 1, 0, 0.7317346, 0, 0.6815897, 385.62634, 0, -5.3881674)
 
 [node name="rowBlock192" parent="." unique_id=848528651 instance=ExtResource("5_7r4hb")]
-transform = Transform3D(0.7660445, 0, 0.64278746, 0, 1, 0, -0.64278746, 0, 0.7660445, 399.89688, 0, 1.7086296)
+transform = Transform3D(0.6035979, 0, 0.797289, 0, 1, 0, -0.797289, 0, 0.6035979, 402.44272, 0, 3.0391598)
 
 [node name="rowBlock193" parent="." unique_id=2098241650 instance=ExtResource("5_7r4hb")]
 transform = Transform3D(0.34202027, 0, 0.9396925, 0, 1, 0, -0.9396925, 0, 0.34202027, 412.89688, 0, -14.29137)

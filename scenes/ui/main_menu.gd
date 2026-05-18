@@ -218,8 +218,13 @@ func _on_map_selected(idx: int) -> void:
 	_bg_tween = create_tween()
 	_bg_tween.tween_property(overlay, "color", Color(0, 0, 0, 1), 0.40)
 	_bg_tween.tween_callback(func():
-		get_tree().change_scene_to_file(scene_path))
-
+		if idx == 0:      # Grand Prix Map
+			get_tree().change_scene_to_file("res://scenes/game/GrandPrixMap.tscn")
+		elif idx == 1:    # Sunset Map
+			get_tree().change_scene_to_file("res://scenes/game/DesertDuskMap.tscn")
+		elif idx == 2:    # Night Map
+			get_tree().change_scene_to_file("res://scenes/game/MidnightCircuit.tscn")
+	)
 
 # ── HELPERS ─────────────────────────────────────────────────────────────────
 
