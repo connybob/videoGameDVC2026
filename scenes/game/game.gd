@@ -27,7 +27,7 @@ var rng := RandomNumberGenerator.new()
 
 # ─────────────────────────── RACE TIMER STATE ────────────────────────────────
 
-const _RACE_LIMIT := 120.0  # 2 minutes for 2 laps
+const _RACE_LIMIT := 125.0  # 2:05 for 2 laps
 
 var _race_time    := _RACE_LIMIT  # counts DOWN from 120
 var _racing       := false        # true after countdown completes
@@ -99,7 +99,7 @@ func _setup_hud() -> void:
 
 	# Race timer — top-centre (shows countdown)
 	_timer_label = Label.new()
-	_timer_label.text = "2:00.000"
+	_timer_label.text = "2:05.000"
 	_timer_label.add_theme_font_size_override("font_size", 36)
 	_timer_label.add_theme_color_override("font_color", Color(1, 1, 1))
 	_timer_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
